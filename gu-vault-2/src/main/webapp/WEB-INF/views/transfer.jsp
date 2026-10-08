@@ -1,0 +1,12 @@
+<%@ page contentType="text/html;charset=UTF-8" %><%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="pageTitle" value="Transfer"/><c:set var="pageHeading" value="Move money securely."/><c:set var="pageEyebrow" value="Payments & transfers"/><c:set var="pageKey" value="transfer"/><jsp:include page="includes/header.jsp"/>
+<div class="split-layout"><section class="glass-panel content-card"><div class="section-head"><div><span class="section-kicker">New transfer</span><h2>Send to a beneficiary</h2><p class="muted">The transfer is persisted in MySQL and updates both simulated accounts atomically.</p></div></div>
+<form class="bank-form" method="post" action="${pageContext.request.contextPath}/transfer" data-confirm="Send this transfer now?"><input type="hidden" name="csrfToken" value="${csrfToken}">
+<label>From account<div class="select-static"><strong>${account.maskedAccountNumber}</strong><span>₹${account.balance} available</span></div></label>
+<label>Beneficiary<select name="beneficiaryId" required><option value="">Choose beneficiary</option><c:forEach var="b" items="${beneficiaries}"><option value="${b.id}">${b.displayName} · ${b.maskedAccountNumber}</option></c:forEach></select></label>
+<label>Amount<input type="number" name="amount" step="0.01" min="1" max="100000" required placeholder="0.00"></label>
+<label>Note (optional)<input type="text" name="note" maxlength="120" placeholder="What is this for?"></label>
+<button class="primary-button full" type="submit">Review & send <span>→</span></button></form>
+</section>
+<section class="glass-panel content-card"><div class="section-head"><div><span class="section-kicker">Saved recipients</span><h2>Beneficiaries</h2></div><a class="text-link" href="${pageContext.request.contextPath}/beneficiaries">Manage →</a></div><div class="beneficiary-stack"><c:forEach var="b" items="${beneficiaries}"><div class="beneficiary-mini"><div class="avatar small">${b.beneficiaryName.substring(0,1)}</div><div><strong>${b.displayName}</strong><small>${b.maskedAccountNumber} · ${b.ifscCode}</small></div><a href="${pageContext.request.contextPath}/transfer">Send</a></div></c:forEach><c:if test="${empty beneficiaries}"><div class="empty-state">No saved beneficiaries. Add one first.</div></c:if></div><a class="secondary-button full" href="${pageContext.request.contextPath}/beneficiaries">+ Add beneficiary</a></section></div>
+<jsp:include page="includes/footer.jsp"/>
